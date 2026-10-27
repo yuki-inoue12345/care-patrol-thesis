@@ -6,15 +6,21 @@
 
 **BLOCKED（実機NUCへ到達できないため未配置）**
 
+同日の再試行ではmDNSが`koko-chan-nuc-NUC11PAHi5.local`を`172.22.25.94`へ
+解決した。開発PCのWi-Fiは`172.22.23.178/18`で同一subnet routeを持つが、neighbor
+解決は`FAILED`、TCP/22とSSHは`No route to host`だった。過去IP`172.22.15.125`も
+同じ結果だった。これはGitHub認証前のnetwork到達性blockerである。
+
 確認できた接続候補は次のとおり。
 
 - user: `koko-chan-nuc`
 - host: `koko-chan-nuc-NUC11PAHi5` / `koko-chan-nuc-NUC11PAHi5.local`
 - 過去IP候補: `172.22.15.125`
 
-今回、host名は解決できず、IPへのSSHは`No route to host`だった。したがって、実機の
-directory、Git、colcon、overlay、空き容量、権限、GitHub認証を現在値として確認できて
-いない。安全条件に従い、clone、directory作成、package install、buildは行っていない。
+初回はhost名を解決できず、再試行では解決した現在IPにも到達できなかった。したがって、
+実機のdirectory、Git、colcon、overlay、空き容量、権限、GitHub認証を現在値として
+確認できていない。安全条件に従い、clone、directory作成、package install、buildは
+行っていない。
 
 2026-10-13の保存logからは、当時のCamera V7が
 `/home/koko-chan-nuc/inoueyuki_ws/daikoudai_v7.py`、Pythonが

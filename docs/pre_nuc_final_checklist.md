@@ -85,8 +85,8 @@
 | 区分 | 判定 | 根拠・ログ |
 |---|---|---|
 | 開発PC統合 | PASS | 実Follower統合3件、main終了3件、package test結果を記入 |
-| NUC環境・build |  |  |
-| NUC C920単体 |  |  |
-| 実機ROS READ-ONLY |  |  |
+| NUC環境・build | BLOCKED | 2026-10-27: mDNSは172.22.25.94へ解決、ARP FAILED、SSH No route to host。未配置・未build |
+| NUC C920単体 | BLOCKED | NUC未到達。cameraはopenしていない |
+| 実機ROS READ-ONLY | BLOCKED | NUC未到達。ROS CLIは実行していない |
 | 停止機構単体 | BLOCKED（未許可） |  |
 | YOLO停止統合 | BLOCKED（未許可） |  |

@@ -24,7 +24,8 @@
   - 実機ROS networkへの接続または本番pause service call（未実施・未許可）
   - `NavigateThroughPoses`のROS通信統合（依存buildと既存unit testはPASS）
   - 実機muxでのFollower起動時one-shot `/stop=false`受信挙動
-  - 実機NUCへのSSH（2026-10-27はmDNS解決失敗、過去IPは`No route to host`）
+  - 実機NUCへのSSH（2026-10-27再試行: mDNSは`172.22.25.94`へ解決したが
+    ARP `FAILED`、TCP/22・SSHは`No route to host`。過去IPも同様）
   - 現在の`/home/koko-chan-nuc/inoueyuki_ws`構成確認、clone、NUC build/test
 - Files modified or added by this task:
   - `src/care_patrol/package.xml`
