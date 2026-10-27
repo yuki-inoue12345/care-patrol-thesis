@@ -3,6 +3,7 @@
 ## Repository境界
 
 - repository: `care-patrol-thesis`
+- Private remote: `https://github.com/yuki-inoue12345/care-patrol-thesis`
 - 管理対象: `src/care_patrol/`、`docs/`、README、CHECKPOINT
 - 管理対象外: Robot/Camera本番source、build/install/log、venv、cache、録画、model
 - 実機配置: 既存Robot workspaceとは別の`~/care_patrol_ws`
@@ -34,3 +35,7 @@ Git LFSは開発PCへ未導入です。現在のrepositoryにはLFSが必要なb
 
 Private設定を維持し、Public化はRobot route、施設情報、第三者コード、モデル配布条件を
 再監査するまで行いません。
+
+現在の実行環境ではworkspace直下の空`.git`がREAD-ONLYのため、Git checkoutは
+`local_repositories/care-patrol-thesis`へ分離しています。通常環境へ移す際はPrivate
+remoteを新しい独立directoryへcloneし、rootとcheckoutの二重編集を避けてください。

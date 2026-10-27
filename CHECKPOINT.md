@@ -1,6 +1,6 @@
 # CHECKPOINT
 
-- Current Phase: 実機NUC移植前の最終確認完了; NUCへの移植・実機READ-ONLY確認待ち
+- Current Phase: Private Git分離と開発PC検証完了; NUCへの移植・実機READ-ONLY確認待ち
 - Completed:
   - archive sourceを変更せず `robotbase_bt_nodes`、`robotbase_bringup`、`robotbase_waypoint` を専用overlayへbuild
   - `waypoint_follow.py` SHA256 `bdec94385f670b493640397cec2135fbf2bf8e0bb9d46e2f5074f47292ca1a29`を再照合
@@ -69,8 +69,14 @@
   - startup `/stop=false` is a VOLATILE one-shot and was not externally observed in three subprocess trials
   - production Robot, Nav2 and Camera V7 source/config were not changed
 - Existing workspace state:
-  - `care_patrol_ws` is not a Git repository
+  - 実行環境がworkspace直下の空`.git`をREAD-ONLYで予約しているため、rootでは
+    `git init`できない
+  - 独立Git checkoutは`local_repositories/care-patrol-thesis`、Private remoteは
+    `https://github.com/yuki-inoue12345/care-patrol-thesis`
+  - 初回source snapshot commitは`31febab4665efa06a4649e40e9be18c4b89585eb`
+  - 中チャレは別repository `yuki-inoue12345/nakanoshima-robot-challenge`
   - Camera project assets and robot archive were used READ-ONLY
 - Next exact action:
+  - 今後の変更はrootと独立Git checkoutの二重編集を避け、test後に明示的に同期・commitする
   - use [docs/pre_nuc_final_checklist.md](docs/pre_nuc_final_checklist.md) and copy only `src/care_patrol` plus verified `yolo11n.pt` after explicit NUC migration approval
   - on NUC, perform import/build/saved-video/C920/mock-service and navigation-mode READ-ONLY checks before any real pause request
