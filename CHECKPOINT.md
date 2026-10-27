@@ -1,0 +1,76 @@
+# CHECKPOINT
+
+- Current Phase: 実機NUC移植前の最終確認完了; NUCへの移植・実機READ-ONLY確認待ち
+- Completed:
+  - archive sourceを変更せず `robotbase_bt_nodes`、`robotbase_bringup`、`robotbase_waypoint` を専用overlayへbuild
+  - `waypoint_follow.py` SHA256 `bdec94385f670b493640397cec2135fbf2bf8e0bb9d46e2f5074f47292ca1a29`を再照合
+  - 実Followerが模擬NavigateToPoseへgoal送信
+  - 保存動画＋YOLO11nの3連続person検出から実Follower `set_paused(true)`を1回だけ呼出
+  - 実FollowerのNav2 cancel、zero Twist、0.5秒後の `/stop=true`、manual pause維持を確認
+  - 模擬静止Odometryと `/stop=true` の両方でのみguardが `STOP_CONFIRMED`
+  - cancel拒否＋走行Odometryでは `REQUEST_ACCEPTED_UNCONFIRMED` を維持
+  - 人物なし、service不在、service応答timeout、古い停止観測、カメラ不在の否定系試験
+  - service明示拒否と停止観測片側欠落の否定系試験
+  - guard終了後も `data=False`、追加goal、自動再開がないことを確認
+  - 実Follower mainのSIGINT/SIGTERM正常cleanupと未解決cancel時の異常cleanupを確認
+  - 起動時`/stop=false` one-shotが外部observerへ届かないDDS discovery競合を記録
+  - 保存動画の最初のpositive frameを基準に検出・service・模擬停止時刻を計測
+  - navigation modeの実機READ-ONLY確認手順とNUC最終checklistを文書化
+  - Ultralyticsを開発PC確認済みの8.4.47へ固定
+  - NUC移植用config・依存・構築・起動手順を文書化
+- Not completed:
+  - C920実映像（開発PCに未接続）
+  - 実Nav2、実motor controller、物理停止、停止距離
+  - 実機ROS networkへの接続または本番pause service call（未実施・未許可）
+  - `NavigateThroughPoses`のROS通信統合（依存buildと既存unit testはPASS）
+  - 実機muxでのFollower起動時one-shot `/stop=false`受信挙動
+- Files modified or added by this task:
+  - `src/care_patrol/package.xml`
+  - `src/care_patrol/requirements.txt`
+  - `src/care_patrol/config/person_stop_guard_nuc.yaml`
+  - `src/care_patrol/test/fixtures/integration_waypoints.yaml`
+  - `src/care_patrol/test/test_real_waypoint_integration.py`
+  - `src/care_patrol/test/test_follower_main_shutdown.py`
+  - `src/care_patrol/test/test_person_stop_guard.py`
+  - `src/care_patrol/test/test_saved_video_mock_service.py`
+  - `docs/development_pc_waypoint_integration.md`
+  - `docs/nuc_migration.md`
+  - `docs/pre_nuc_final_checklist.md`
+  - `docs/real_robot_validation.md`
+  - `docs/reuse_inventory.md`
+  - `docs/source_manifest.md`
+  - `CHECKPOINT.md`
+- Generated development-only overlays:
+  - `build/robot_integration/`
+  - `install/robot_integration/`
+  - `log/robot_integration_build/`
+- Test results:
+  - `care_patrol` standard pytest: 15 passed, 6 explicit integration tests skipped by default
+  - `colcon test --packages-select care_patrol`: 21 tests, 0 errors, 0 failures, 6 skipped
+  - explicit real-Follower integration: 3 passed
+  - explicit Follower main lifecycle integration: 3 passed
+  - `ament_flake8 --config src/care_patrol/setup.cfg`: no problems found
+  - archive `robotbase_waypoint` existing tests: 77 passed, 8 fork warnings
+  - archive `robotbase_bt_nodes` CTest: 1 passed
+- Latest integration metrics:
+  - video: 29.739 FPS metadata, guard configured 10.0 FPS
+  - confidence: 0.887799, people: 2, consecutive frames: 3
+  - mean YOLO inference: 93.539 ms, inference-only 10.691 FPS
+  - observed processing to latch: 7.390 FPS
+  - first positive frame inference start to 3-frame latch: 0.287 sec
+  - first positive frame inference start to service request: 0.288 sec
+  - service request to simulated stop confirmation: 0.582 sec
+  - first positive frame inference start to simulated stop confirmation: 0.869 sec
+  - total guard start to simulated stop confirmation: 0.989 sec
+- Safety interpretation:
+  - simulated stop confirmation is not a physical robot stop
+  - mock cancel rejection staying UNCONFIRMED is a safety-path PASS, not a stop-success PASS
+  - resolved manual pause followed by Follower SIGINT/SIGTERM publishes `/stop=false`; use physical safety handoff before stopping it
+  - startup `/stop=false` is a VOLATILE one-shot and was not externally observed in three subprocess trials
+  - production Robot, Nav2 and Camera V7 source/config were not changed
+- Existing workspace state:
+  - `care_patrol_ws` is not a Git repository
+  - Camera project assets and robot archive were used READ-ONLY
+- Next exact action:
+  - use [docs/pre_nuc_final_checklist.md](docs/pre_nuc_final_checklist.md) and copy only `src/care_patrol` plus verified `yolo11n.pt` after explicit NUC migration approval
+  - on NUC, perform import/build/saved-video/C920/mock-service and navigation-mode READ-ONLY checks before any real pause request

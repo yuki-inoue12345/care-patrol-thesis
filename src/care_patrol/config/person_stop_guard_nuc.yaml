@@ -1,0 +1,25 @@
+person_stop_guard:
+  ros__parameters:
+    input_mode: camera
+    video_path: ''
+    camera_device: /dev/v4l/by-id/REPLACE_WITH_C920_CAPTURE_DEVICE
+    allow_direct_camera: false
+    refuse_if_camera_v7_running: true
+    camera_lock_path: /tmp/care_patrol_c920.lock
+    camera_width: 640
+    camera_height: 480
+    yolo_model: /absolute/path/to/yolo11n.pt
+    confidence: 0.5
+    yolo_image_size: 640
+    required_consecutive_frames: 3
+    processing_rate_hz: 5.0
+    pause_service: /koko_waypoint_follower/set_paused
+    service_wait_timeout_sec: 5.0
+    service_response_timeout_sec: 5.0
+    stop_confirmation_timeout_sec: 10.0
+    stop_confirmation_topic: /stop
+    odometry_topic: /odom/filtered
+    require_odometry_confirmation: true
+    stationary_samples: 3
+    stationary_linear_threshold: 0.03
+    stationary_angular_threshold: 0.05

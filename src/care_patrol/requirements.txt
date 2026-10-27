@@ -1,0 +1,3 @@
+# Install into the Python environment that launches person_stop_guard.
+# This is the exact release used by the final development-PC integration run.
+ultralytics==8.4.47
