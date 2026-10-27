@@ -1,6 +1,6 @@
 # CHECKPOINT
 
-- Current Phase: Private Git分離と開発PC検証完了; NUCへの移植・実機READ-ONLY確認待ち
+- Current Phase: NUC GitHub配置準備完了; NUC network到達不能のためREAD-ONLY確認・clone待ち
 - Completed:
   - archive sourceを変更せず `robotbase_bt_nodes`、`robotbase_bringup`、`robotbase_waypoint` を専用overlayへbuild
   - `waypoint_follow.py` SHA256 `bdec94385f670b493640397cec2135fbf2bf8e0bb9d46e2f5074f47292ca1a29`を再照合
@@ -24,6 +24,8 @@
   - 実機ROS networkへの接続または本番pause service call（未実施・未許可）
   - `NavigateThroughPoses`のROS通信統合（依存buildと既存unit testはPASS）
   - 実機muxでのFollower起動時one-shot `/stop=false`受信挙動
+  - 実機NUCへのSSH（2026-10-27はmDNS解決失敗、過去IPは`No route to host`）
+  - 現在の`/home/koko-chan-nuc/inoueyuki_ws`構成確認、clone、NUC build/test
 - Files modified or added by this task:
   - `src/care_patrol/package.xml`
   - `src/care_patrol/requirements.txt`
@@ -35,6 +37,7 @@
   - `src/care_patrol/test/test_saved_video_mock_service.py`
   - `docs/development_pc_waypoint_integration.md`
   - `docs/nuc_migration.md`
+  - `docs/nuc_inoueyuki_ws_deployment.md`
   - `docs/pre_nuc_final_checklist.md`
   - `docs/real_robot_validation.md`
   - `docs/reuse_inventory.md`
@@ -77,6 +80,9 @@
   - 中チャレは別repository `yuki-inoue12345/nakanoshima-robot-challenge`
   - Camera project assets and robot archive were used READ-ONLY
 - Next exact action:
-  - 今後の変更はrootと独立Git checkoutの二重編集を避け、test後に明示的に同期・commitする
-  - use [docs/pre_nuc_final_checklist.md](docs/pre_nuc_final_checklist.md) and copy only `src/care_patrol` plus verified `yolo11n.pt` after explicit NUC migration approval
-  - on NUC, perform import/build/saved-video/C920/mock-service and navigation-mode READ-ONLY checks before any real pause request
+  - NUCと同一networkへ接続し、
+    [docs/nuc_inoueyuki_ws_deployment.md](docs/nuc_inoueyuki_ws_deployment.md)の
+    READ-ONLY確認を実行する
+  - 衝突なしの場合だけ`inoueyuki_ws/care_patrol_overlay/repo`へPrivate repositoryをcloneし、
+    commit `d9d06a574948ffa2014c196b9b15f15523da86f3`をdetached checkoutする
+  - NUCでは隔離build/test、保存動画、C920＋模擬serviceの順に確認し、実service callは行わない

@@ -16,7 +16,8 @@ CHECKPOINT.md       現在の進捗と再開位置
 ```
 
 既存Robot、Camera V7、Nav2本番sourceは含めません。実機ではこのrepositoryを
-`~/care_patrol_ws`等の独立workspaceへcloneし、既存Robot workspaceへ直接
+`~/inoueyuki_ws/care_patrol_overlay/repo`へcloneし、`COLCON_IGNORE`付きの親directoryと
+専用build/install/logで既存環境から隔離します。既存Robot workspaceへ直接
 `git pull`しないでください。
 
 ## Buildと通常test
@@ -49,6 +50,8 @@ python -m pip install -r src/care_patrol/requirements.txt
 
 実機移植は[NUC移植手順](docs/nuc_migration.md)と
 [最終チェックリスト](docs/pre_nuc_final_checklist.md)を使用してください。
+`inoueyuki_ws`へのGitHub cloneは
+[専用配置手順](docs/nuc_inoueyuki_ws_deployment.md)を正本とします。
 
 ## Model管理
 

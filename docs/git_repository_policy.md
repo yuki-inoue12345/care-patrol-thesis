@@ -6,7 +6,8 @@
 - Private remote: `https://github.com/yuki-inoue12345/care-patrol-thesis`
 - 管理対象: `src/care_patrol/`、`docs/`、README、CHECKPOINT
 - 管理対象外: Robot/Camera本番source、build/install/log、venv、cache、録画、model
-- 実機配置: 既存Robot workspaceとは別の`~/care_patrol_ws`
+- 実機配置: `~/inoueyuki_ws/care_patrol_overlay/repo`。親に`COLCON_IGNORE`を置き、
+  `runtime/build`、`runtime/install`、`runtime/log`へ分離
 
 Robot archiveとCamera資産はREAD-ONLY参照元であり、このrepositoryへコピーしません。
 実機NUCではtest済みcommitまたはtagを指定してcheckoutし、既存

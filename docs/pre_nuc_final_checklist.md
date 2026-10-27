@@ -3,9 +3,14 @@
 判定は `PASS / PARTIAL / BLOCKED` で記録する。未実施をPASSにしない。
 実機送信・走行を伴う項目は、別途許可されるまで `BLOCKED（未許可）` とする。
 
-## A. 開発PCから持ち出す前
+## A. GitHubから取得する前
 
-- [ ] `src/care_patrol/`だけを新しい独立workspaceの`src/`へ移す。
+- [ ] Private repository `yuki-inoue12345/care-patrol-thesis`へ認証できる。
+- [ ] `~/inoueyuki_ws/care_patrol_overlay`が存在せず、既存Git・colcon構成と衝突しない。
+- [ ] `care_patrol_overlay/COLCON_IGNORE`で既存colcon探索から隔離する。
+- [ ] repositoryを`care_patrol_overlay/repo`へcloneする。
+- [ ] detached HEADが
+  `d9d06a574948ffa2014c196b9b15f15523da86f3`と完全一致する。
 - [ ] `.pytest_cache`、`__pycache__`、`build/`、`install/`、`log/`を除外する。
 - [ ] `person_stop_guard.py` SHA256が
   `222e53104d7ebd1c2bd212ea68f310dcc1f4f012ad950f78e2ced1f6972cc47b`。
@@ -22,8 +27,10 @@
 ## B. NUCの隔離準備
 
 - [ ] Ubuntu 24.04、ROS 2 Jazzy、Python 3.12を確認した。
-- [ ] `/opt/ros/jazzy` → Robot overlay → `~/care_patrol_ws/install`のsource順を確認した。
-- [ ] 卒研専用`~/care_patrol_ws/.venv`を`--system-site-packages`で作成した。
+- [ ] build時は既存Robot overlayをsourceせず、`/opt/ros/jazzy`だけをunderlayにした。
+- [ ] runtime時の`/opt/ros/jazzy` → Robot overlay →
+  `~/inoueyuki_ws/care_patrol_overlay/runtime/install`のsource順を確認した。
+- [ ] 卒研専用`care_patrol_overlay/runtime/venv`を`--system-site-packages`で作成した。
 - [ ] `requirements.txt`のUltralytics 8.4.47と、NUCに適したPyTorch backendを導入した。
 - [ ] `rclpy`、`cv2`、`numpy`、`torch`、`ultralytics`を同じvenvのPythonからimportできた。
 - [ ] modelをローカル配置し、推論時にnetwork downloadが発生しない。

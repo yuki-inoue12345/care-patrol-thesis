@@ -5,8 +5,8 @@
 実機へ移すruntime資産は卒研packageとmodelだけとする。
 
 ```text
-care_patrol_ws/src/care_patrol/
-/opt/care_patrol/models/yolo11n.pt  # NUC側の配置例
+inoueyuki_ws/care_patrol_overlay/repo/src/care_patrol/
+inoueyuki_ws/care_patrol_overlay/runtime/models/yolo11n.pt
 ```
 
 開発用の `build/robot_integration`、`install/robot_integration`、模擬Nav2、保存動画は
@@ -37,29 +37,25 @@ ROS依存は `package.xml`、pip依存は `requirements.txt` を正とする。
 
 ## NUC上のworkspace構築
 
-以下は移植許可後にNUCで実行する。
+配置方針は、既存`/home/koko-chan-nuc/inoueyuki_ws`内へGitHubから取得する方式へ変更した。
+既存colcon探索への混入を防ぐため、直下へsource packageを置かず、次の隔離subtreeを
+使用する。
 
-```bash
-mkdir -p ~/care_patrol_ws/src
-# src/care_patrol をここへコピーする
-cd ~/care_patrol_ws
-
-source /opt/ros/jazzy/setup.bash
-source ~/robotbase_ws_renya/install/setup.bash
-rosdep install --from-paths src --ignore-src -r -y
-colcon build --packages-select care_patrol
-
-python3 -m venv --system-site-packages .venv
-source .venv/bin/activate
-python -m pip install -r src/care_patrol/requirements.txt
-source install/setup.bash
-
-python -c 'import rclpy, cv2, numpy, ultralytics; print("imports OK")'
-python -c 'from care_patrol.person_stop_guard import PersonStopGuard; print("guard OK")'
+```text
+~/inoueyuki_ws/care_patrol_overlay/
+├── COLCON_IGNORE
+├── repo/       # care-patrol-thesis、検証済みcommitをdetached checkout
+└── runtime/    # 専用build/install/log/venv/models
 ```
 
-overlayは必ず `/opt/ros/jazzy` → 既存Robot workspace → 卒研workspaceの順にsourceする。
-Robot workspaceへ卒研packageを混ぜず、`~/care_patrol_ws`を独立overlayとして維持する。
+正確な配置・clone・build手順と2026-10-27の接続結果は
+[nuc_inoueyuki_ws_deployment.md](nuc_inoueyuki_ws_deployment.md)を正本とする。
+現在の実機構成がREAD-ONLY確認できない場合はcloneしない。
+
+build時は`/opt/ros/jazzy`だけをunderlayにし、`repo/src`を`--base-paths`で明示する。
+runtime時は `/opt/ros/jazzy` → 既存Robot workspace →
+`~/inoueyuki_ws/care_patrol_overlay/runtime/install`の順にsourceする。Robot workspaceと
+既存`inoueyuki_ws`のbuild/installへ卒研packageを混ぜない。
 
 ネット接続を許可しない場合は、Ultralyticsと依存wheelを事前にwheelhouseへ用意し、
 `pip install --no-index --find-links /path/to/wheelhouse -r ...`を使用する。
@@ -81,8 +77,8 @@ templateの `allow_direct_camera` は意図的に `false`。Camera V7停止、de
 source /opt/ros/jazzy/setup.bash
 source ~/robotbase_ws_renya/bash/activate_koko_env.sh
 source ~/robotbase_ws_renya/install/setup.bash
-source ~/care_patrol_ws/.venv/bin/activate
-source ~/care_patrol_ws/install/setup.bash
+source ~/inoueyuki_ws/care_patrol_overlay/runtime/venv/bin/activate
+source ~/inoueyuki_ws/care_patrol_overlay/runtime/install/setup.bash
 
 printf 'ROS_DOMAIN_ID=%s\n' "$ROS_DOMAIN_ID"
 ros2 service type /koko_waypoint_follower/set_paused
@@ -118,11 +114,11 @@ setする操作やlaunch変更はこの確認に含めない。
 venvのUltralyticsを確実に使うため `ros2 run`ではなく `python -m`を使う。
 
 ```bash
-cd ~/care_patrol_ws
+cd ~/inoueyuki_ws/care_patrol_overlay/repo
 python -m care_patrol.person_stop_guard --ros-args \
-  --params-file install/care_patrol/share/care_patrol/config/person_stop_guard_nuc.yaml \
+  --params-file ../runtime/install/care_patrol/share/care_patrol/config/person_stop_guard_nuc.yaml \
   -p camera_device:=/dev/v4l/by-id/C920_CAPTURE_DEVICE \
-  -p yolo_model:=/absolute/path/to/yolo11n.pt \
+  -p yolo_model:=/home/koko-chan-nuc/inoueyuki_ws/care_patrol_overlay/runtime/models/yolo11n.pt \
   -p allow_direct_camera:=true
 ```
 
